@@ -1,0 +1,212 @@
+<!--
+  Student Name: Michael Kneale
+  Student Number: 46502289
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>FlowTow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
+
+    <!-- Include Handlebars from a CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+    <script src="./js/main.js" type=module defer></script>
+  </head>
+  <body>
+    <header>
+      <div id="logo"></div>
+      <nav>
+          <ul>
+              <li><a href="#">Home&nbsp&nbsp</a>
+              <a href="#!/all-posts">All Posts&nbsp&nbsp</a>
+              <a href="#!/my-posts">My Posts&nbsp&nbsp</a>
+              <a href="#whatis">About FlowTow</a></li>
+          </ul>
+      </nav>
+    </header>
+
+    <div id=login>
+      <form id="loginform">
+        <label for=username> Username: </label>
+        <input name=username>
+        <label for=password> Password: </label>
+        <input name=password type=password>
+        <input type=submit value="Login">
+      </form>
+      <div id="failMessage">
+      </div>
+    </div>
+    
+    <div id="content">
+      
+      <div id="heading">
+           
+          <hgroup>
+              <h1>Welcome to FlowTow!</h1>
+          </hgroup>
+      
+          <div id="target"></div>
+          
+      </div>
+    </div>
+
+    <form id='commentform' method='POST' action='/comments' style="display: none">
+      <aside> commentform c_post</aside>
+      <label for=c_content> Comment: </label>
+      <input name=c_content>
+      <input type=submit value="Add a Comment">
+    </form>
+
+    <form id="postform" method='POST' action='/posts' style="display: none">
+      <label for=p_url>URL: </label>
+      <input name=p_url>
+      <label for=p_caption>Caption: </label>
+      <input name=p_caption>
+      <input type=submit value="Create a Post">
+    </form>
+
+    <div id ="blocks">
+      <div id="randomDiv"></div>
+      <div class="grid-container">
+        <div id="recentDiv"></div>
+        <div id="popularDiv"></div>
+      </div>
+      <div id="singlePostDiv"> <li></li></div>
+      <div id="allDiv"></div>
+      <div id="myDiv"></div>
+      <div id="userDiv"></div>
+    </div>
+
+    <div id="whatis">
+      <br>
+      <br>
+      <br>
+      <h3><b>About FlowTow</b></h3>
+      <br>
+      <li>FlowTow is a brand new image-sharing service. You can post images, view them, and comment on them.</li>
+    </div>
+
+  <footer>
+    <div id="social">
+      <ul>
+        <li id="social-twitter"><a href="#"><img src="https://image.flaticon.com/icons/png/512/124/124021.png" width="20"></a></li>
+        <li id="social-facebook"><a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Facebook_icon_2013.svg/1200px-Facebook_icon_2013.svg.png" width="20"></a></li>
+        <li id="social-instagram"><a href="#"><img src="https://www.freepnglogos.com/uploads/new-instagram-logo-with-transparent-background-9.png" width="20"></a></li>
+      </ul>
+    </div>
+
+    <ul class="footer-tos">
+      <a href="#">Terms&nbsp</a>
+      <a href="#">Privacy&nbsp</a>
+      <a href="#">Cookies&nbsp</a>
+    </ul>
+    
+    <p id="copyright">All content and images subject to copyright &copy; COMP2110/6110 FlowTow 2021.</p>
+  </footer>
+
+
+  <!-- Templates
+  These utilise Handlebars to display the data associated with different posts
+  in different formats -->
+
+  <script id="three-posts-template" type='text/x-handlebars-template'>
+    {{#each post}}
+    <div class="flowtow">
+      <img src="{{p_url}}" alt="{{p_caption}}" width="300" height="300" onclick="location.href='/#!/posts/{{id}}'">
+      <tr><td class=each-person data-id={{id}}>{{p_caption}}   </td><td>by <a href="#!/{{p_author.username}}">{{p_author.username}}</a>&nbsp</td><td>   {{#if p_likes}} {{p_likes}} {{else}} 0 {{/if}}</td></tr>
+    </div>
+    {{/each}}
+  </script>
+
+  <script id="ten-recent-template" type='text/x-handlebars-template'>
+    <h2>Recent Posts</h2>
+    <table>
+      <div class="flowtow2">
+      {{#each post}}
+          <tr><td class=each-person data-id={{id}} onclick="location.href='/#!/posts/{{id}}'"><img src="{{p_url}}" alt="{{p_caption}}" width="75" height="75"></td> <td>{{p_caption}}&nbsp&nbsp</td> <td>by <a href="#!/{{p_author.username}}">{{p_author.username}}</a>&nbsp</td> <td>on {{trimString published_at}}</td> <td>&nbsp&nbsp {{#if p_likes}} {{p_likes}} {{else}} 0 {{/if}}</td> <td><button type="button" id="likebutton">Like</button></td></tr>
+      {{/each}}
+    </div>
+    </table>
+  </script>
+  
+  <script id="ten-popular-template" type='text/x-handlebars-template'>
+    <h2>Popular Posts</h2>
+    <table>
+      <div class="flowtow2">
+      {{#each post}}
+          <tr><td class=each-person data-id={{id}} onclick="location.href='/#!/posts/{{id}}'"><img src="{{p_url}}" alt="{{p_caption}}" width="75" height="75"></td> <td>{{p_caption}}&nbsp&nbsp</td> <td>by <a href="#!/{{p_author.username}}">{{p_author.username}}</a>&nbsp</td> <td>on {{trimString published_at}}</td> <td>&nbsp&nbsp{{#if p_likes}} {{p_likes}} {{else}} 0 {{/if}}</td> <td><button type="button" id="likebutton">Like</button></td></tr>
+      {{/each}}
+    </div>
+    </table>
+  </script>
+
+  <script id="all-posts-template" type='text/x-handlebars-template'>
+    <h2>All Posts</h2>
+    <table>
+      <div class="flowtow5">
+      {{#each post}}
+          <tr><td class=each-person data-id={{id}} onclick="location.href='/#!/posts/{{id}}'"><img src="{{p_url}}" alt="{{p_caption}}"></td> <td>{{p_caption}}&nbsp&nbsp</td> <td>on {{trimString published_at}}</td><td>{{#each p_comment}}{{p_comment.id.c_content}} {{/each}}</td></tr>
+      {{/each}}
+    </div>
+  </script>
+
+ <script id="single-post-template" type='text/x-handlebars-template'>
+    <div class="flowtow4">
+      <img src="{{p_url}}" alt="{{p_caption}}">
+      <tr><td class=each-person data-id={{id}}><td>{{p_caption}}&nbsp&nbsp</td> <td>by <a href="#!/{{p_author.username}}">{{p_author.username}}</a>&nbsp</td> <td>on {{trimString published_at}}</td> <td>&nbsp&nbsp{{#if p_likes}} {{p_likes}} {{else}} 0 {{/if}}</td><td><button type="button" id="likebutton">Like</button></tr>
+      <br>
+      <li><b>Comments</b></li>
+      <br>
+      {{#each p_comment}}
+      <li>{{c_content}}</li>
+      <br>
+      {{/each}}
+      </div>
+  </script>
+
+  <script id="my-posts-template" type='text/x-handlebars-template'>
+    <h2>My Posts</h2>
+    <table>
+      <div class="flowtow6">
+      {{#each post}}
+          <tr><td class=each-person data-id={{id}} onclick="location.href='/#!/posts/{{id}}'"><img src="{{p_url}}" alt="{{p_caption}}"></td> <td>{{p_caption}}&nbsp&nbsp</td> <td>on {{trimString published_at}}</td> <td>&nbsp&nbsp{{#if p_likes}} {{p_likes}} {{else}} 0 {{/if}}</td><td><button type="button"  data-id={{id}} id="deletebutton{{id}}" class="deletebuttons">Delete</button></td></tr>
+      {{/each}}
+      </div>
+    </table>
+  </div>
+  </script>
+
+  <script id="user-posts-template" type='text/x-handlebars-template'>
+    <div id="userViewHeading">
+    </div>
+    <table>
+      <div class="flowtow6">
+      {{#each post}}
+          <tr><td class=each-person data-id={{id}} onclick="location.href='/#!/posts/{{id}}'"><img src="{{p_url}}" alt="{{p_caption}}"></td> <td>{{p_caption}}&nbsp&nbsp</td> <td>on {{trimString published_at}}</td> <td>&nbsp&nbsp{{#if p_likes}} {{p_likes}} {{else}} 0 {{/if}}</td></tr>
+      {{/each}}
+      </div>
+    </table>
+  </div>
+  </script>
+
+  <script id="login-template" type='text/x-handlebars-template'>
+    {{#if user}}
+    <p>Logged in as {{user.username}}&nbsp&nbsp<button type="button" id="logoutbutton" style="display: none">Logout</button></p>
+    {{else}}
+    <div class="loginform">
+    <form id="loginform">
+      Username: <input name=username>
+      <br>
+      Password: <input name=password type=password autocomplete="on">
+      <input type="submit" value="Login">
+    </form>
+    </div>
+    {{/if}}
+  </script>
+ 
+
+  </body>
+</html>
