@@ -2,4 +2,4 @@ A web application which displays posts and allows the user to upload their own (
 
 people-Strapi/public/js contains the bulk of the JavaScript code I wrote. The HTML and CSS can be found in people-Strapi/public/index.html and people-Strapi/public/css/style.css respectively.
 
-There are no commits as this application was originally written for a university unit which did not utilise GitHub.
+There are next to no commits as this application was originally written for a university unit which did not utilise GitHub.
